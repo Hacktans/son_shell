@@ -12,6 +12,7 @@ int main(int ac, char **av, char **env)
 	if (!mini)
 		return (0);
 	ft_memset(mini, 0, sizeof(t_list));
+	mini->env = copy_env(env); // env yerine güvenli kopya
 	paths(env, mini);
 	signal(SIGINT, handle_sig);
 	signal(SIGQUIT, SIG_IGN);
@@ -42,7 +43,7 @@ int main(int ac, char **av, char **env)
 		tokens = NULL;
 		if(cmd == NULL)
 			continue;
-		ft_builtins(mini, cmd, env);
+		ft_builtins(mini, cmd);  // env parametresi kaldırıldı
 	}
 	return (0);
 }

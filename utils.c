@@ -54,7 +54,7 @@ int is_directory(const char *path)
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-void exec_command(char **args, char **paths, char **env, t_list *mini)
+void exec_command(char **args, char **paths, t_list *mini)
 {
 	if (!args[0] || args[0][0] == '\0')
 		return;
@@ -83,7 +83,7 @@ void exec_command(char **args, char **paths, char **env, t_list *mini)
    		free(full_path);
    		exit(126);
 	}	
-	execve(full_path, args, env);
+	execve(full_path, args, mini->env);
 	perror("execve");
 	free(full_path);
 	exit(mini->exit_code = 1);
@@ -128,4 +128,24 @@ void	print_error(char *err)
 		write(2, &err[i], 1);
 		i++;
 	}
+}
+
+char **copy_env(char **envp)
+{
+	int i = 0;
+	while (envp[i])
+		i++;
+
+	char **copy = malloc(sizeof(char *) * (i + 1));
+	if (!copy)
+		return (NULL);
+
+	i = 0;
+	while (envp[i])
+	{
+		copy[i] = strdup(envp[i]); // her stringi strdup ile kopyala
+		i++;
+	}
+	copy[i] = NULL;
+	return (copy);
 }

@@ -17,7 +17,7 @@ void retfd(t_cmd *cmd)
     }
 }
 
-void exec_builtin(t_cmd *cmd, t_list *mini, char **env)
+void exec_builtin(t_cmd *cmd, t_list *mini)
 {
     if (ft_strcmp(cmd->command[0], "cd") == 0)
         ft_cd(cmd->command, mini);
@@ -26,11 +26,11 @@ void exec_builtin(t_cmd *cmd, t_list *mini, char **env)
     else if (ft_strcmp(cmd->command[0], "pwd") == 0)
         ft_pwd(mini);
     else if (ft_strcmp(cmd->command[0], "export") == 0)
-        ft_exp(env, cmd, mini);
+        ft_exp(cmd, mini);
     else if (ft_strcmp(cmd->command[0], "unset") == 0)
-        ft_unset(env, cmd->command[1]);
+        ft_unset(cmd->command[1], mini);
     else if (ft_strcmp(cmd->command[0], "env") == 0)
-        ft_env(env, cmd->command, mini);
+        ft_env(cmd->command, mini);
     if(cmd->next)
         retfd(cmd);
     exit(mini->exit_code);
@@ -75,7 +75,7 @@ int has_input_redirection(t_cmd *cmd)
     return 0;
 }
 
-void ft_cmds(t_list *mini, t_cmd *cmd, char **env)
+void ft_cmds(t_list *mini, t_cmd *cmd)
 {
     int prev_pipe_in = -1;
     int pipe_fd[2];
@@ -118,9 +118,9 @@ void ft_cmds(t_list *mini, t_cmd *cmd, char **env)
             if (heredoc_fd != -1)
                 close(heredoc_fd);
             if (is_builtin_command(cmd))
-                exec_builtin(cmd, mini, env);
+                exec_builtin(cmd, mini);
             else
-                exec_command(cmd->command, mini->paths, env, mini);
+                exec_command(cmd->command, mini->paths, mini);
             exit(mini->exit_code);
         }
         last_pid = pid;

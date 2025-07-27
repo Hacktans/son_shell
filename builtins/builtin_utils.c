@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+char	*ft_getenv(char *key, char **env)
+{
+	int		i;
+	size_t	len = strlen(key);
+
+	i = 0;
+	while (env[i])
+	{
+		if (strncmp(env[i], key, len) == 0 && env[i][len] == '=')
+			return (env[i] + len + 1);
+		i++;
+	}
+	return (NULL);
+}
+
 int ft_envlen(char **env)
 {
 	int i = 0;

@@ -41,7 +41,7 @@ int only_exp(char **env)
 	return (0);
 }
 
-int ft_exp(char **env, t_cmd *input, t_list *mini)
+int ft_exp(t_cmd *input, t_list *mini)
 {
 	char **inp = input->command;
 	int i = 0;
@@ -51,7 +51,7 @@ int ft_exp(char **env, t_cmd *input, t_list *mini)
 
 	if (!inp[1])
 	{
-		only_exp(env);
+		only_exp(mini->env);
 		return(0);
 	}
 	if(inp[2])
@@ -74,12 +74,12 @@ int ft_exp(char **env, t_cmd *input, t_list *mini)
 		to_add[strlen(inp[1])] = '=';
 		to_add[strlen(inp[1]) + 1] = '\0';
 	}
-	while (env[i])
+	while (mini->env[i])
 	{
-		if (strncmp(env[i], inp[1], eq - inp[1]) == 0 && env[i][eq - inp[1]] == '=')
+		if (strncmp(mini->env[i], inp[1], eq - inp[1]) == 0 && mini->env[i][eq - inp[1]] == '=')
 		{
-			free(env[i]);
-			env[i] = strdup(inp[1]);
+			free(mini->env[i]);
+			mini->env[i] = strdup(inp[1]);
 			updated = 1;
 			break;
 		}
@@ -87,9 +87,9 @@ int ft_exp(char **env, t_cmd *input, t_list *mini)
 	}
 	if (!updated)
 	{
-		int len = ft_envlen(env);
-		env[len] = strdup(inp[1]);
-		env[len + 1] = NULL;
+		int len = ft_envlen(mini->env);
+		mini->env[len] = strdup(inp[1]);
+		mini->env[len + 1] = NULL;
 	}
 	return 0;
 }

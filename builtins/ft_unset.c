@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int ft_unset(char **env, char *var_name)
+int ft_unset(char *var_name, t_list *mini)
 {
 	int i = 0;
 	int var_len;
@@ -9,17 +9,17 @@ int ft_unset(char **env, char *var_name)
 	if (!var_name)
 		return (1);
 	var_len = ft_strlen(var_name);
-	while (env[i])
+	while (mini->env[i])
 	{
-		if (ft_strncmp(env[i], var_name, var_len) == 0 && env[i][var_len] == '=')
+		if (ft_strncmp(mini->env[i], var_name, var_len) == 0 && mini->env[i][var_len] == '=')
 		{
 			int j = i;
-			while (env[j + 1])
+			while (mini->env[j + 1])
 			{
-				env[j] = env[j + 1];
+				mini->env[j] = mini->env[j + 1];
 				j++;
 			}
-			env[j] = NULL;
+			mini->env[j] = NULL;
 			removed = 1;
 			break;
 		}

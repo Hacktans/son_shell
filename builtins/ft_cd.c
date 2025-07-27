@@ -1,52 +1,94 @@
 #include "minishell.h"
 
-char	*go_home(char *path, t_list *mini)
+char	**ft_env_set(char **env, const char *key, const char *value)
 {
-	path = getenv("HOME");
-	if(!path)
+	int		i = 0;
+	int		key_len = strlen(key);
+	char	*new_var;
+	char	**new_env;
+
+	new_var = malloc(strlen(key) + strlen(value) + 2);
+	if (!new_var)
+		return (env);
+	strcpy(new_var, key);
+	strcat(new_var, "=");
+	strcat(new_var, value);
+	while (env[i])
 	{
-		ft_putstr_fd("cd: HOME not set\n", 2);
-		mini->exit_code = 1;
-		return(NULL);
+		if (strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
+		{
+			free(env[i]);
+			env[i] = new_var;
+			return (env);
+		}
+		i++;
 	}
-	return(path);
+	new_env = malloc(sizeof(char *) * (i + 2));
+	if (!new_env)
+	{
+		free(new_var);
+		return (env);
+	}
+	i = 0;
+	while (env[i])
+	{
+		new_env[i] = env[i];
+		i++;
+	}
+	new_env[i] = new_var;
+	new_env[i + 1] = NULL;
+	free(env);
+	return (new_env);
 }
 
-char	*go_old_pwd(char *path, char *oldpwd, t_list *mini)
+char	*go_home(t_list *mini)
 {
-	oldpwd = getenv("OLDPWD");
-	if(!oldpwd)
+	char *home = ft_getenv("HOME", mini->env);
+	if (!home)
+	{
+		ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
+		mini->exit_code = 1;
+		return (NULL);
+	}
+	return (home);
+}
+
+char	*go_old_pwd(t_list *mini)
+{
+	char *oldpwd = ft_getenv("OLDPWD", mini->env);
+	if (!oldpwd)
 	{
 		ft_putstr_fd("cd: OLDPWD not set\n", STDERR_FILENO);
 		mini->exit_code = 1;
-		return(NULL);
+		return (NULL);
 	}
-	path = oldpwd;
-	printf("%s\n", path);
-	return(path);
+	printf("%s\n", oldpwd);
+	return (oldpwd);
 }
 
 void	ch_dir(char *new, char *path, char *oldpwd, t_list *mini)
 {
-	oldpwd = getenv("PWD");
+	oldpwd = ft_getenv("PWD", mini->env);
 	if (chdir(path) != 0)
-    {
-        perror("cd");
-        mini->exit_code = 1;
-        return;
-    }
-	new = getcwd(NULL , 0);
-	if(!new)
 	{
-		ft_putstr_fd("cd", STDERR_FILENO);
+		perror("cd");
 		mini->exit_code = 1;
 		return;
 	}
-	if(oldpwd)
-		setenv("OLDPWD", oldpwd, 1);
-	setenv("PWD", new, 1);
+	new = getcwd(NULL, 0);
+	if (!new)
+	{
+		ft_putstr_fd("cd: getcwd failed\n", STDERR_FILENO);
+		mini->exit_code = 1;
+		return;
+	}
+	if (oldpwd)
+		mini->env = ft_env_set(mini->env, "OLDPWD", oldpwd);
+	mini->env = ft_env_set(mini->env, "PWD", new);
+	free(new);
 	mini->exit_code = 0;
 }
+
 
 void	ft_cd(char **args, t_list *mini)
 {
@@ -54,16 +96,17 @@ void	ft_cd(char **args, t_list *mini)
 	char *path = NULL;
 	char *new = NULL;
 
-	if(!args[1])
-		path = go_home(path, mini);
-	else if(args[1][0] == '-' && args[1][1] == '\0')
-		path = go_old_pwd(path, oldpwd, mini);
+	if (!args[1])
+		path = go_home(mini);
+	else if (args[1][0] == '-' && args[1][1] == '\0')
+		path = go_old_pwd(mini);
 	else if (args[0] && args[1] && args[2])
 	{
 		mini->exit_code = 0;
-		return ;
+		return;
 	}
 	else
 		path = args[1];
-	ch_dir(new, path, oldpwd, mini);
+	if (path)
+		ch_dir(new, path, oldpwd, mini);
 }

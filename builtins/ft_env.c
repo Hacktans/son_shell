@@ -1,6 +1,7 @@
+
 #include "minishell.h"
 
-void    ft_env(char **env, char **cmds, t_list *mini)
+void    ft_env(char **cmds, t_list *mini)
 {
     int i = 0;
     char *er;
@@ -11,9 +12,9 @@ void    ft_env(char **env, char **cmds, t_list *mini)
         mini->exit_code = 1;
         return;
     }
-    while(env[i])
+    while(mini->env[i])
     {
-        printf("%s\n", env[i]);
+        printf("%s\n", mini->env[i]);
         i++;
     }
 }
