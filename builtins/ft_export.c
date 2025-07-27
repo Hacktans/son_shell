@@ -41,39 +41,9 @@ int only_exp(char **env)
 	return (0);
 }
 
-int ft_exp(t_cmd *input, t_list *mini)
+void	set_env(t_list *mini, char *eq, int updated, char **inp)
 {
-	char **inp = input->command;
 	int i = 0;
-	int updated = 0;
-	char *eq;
-	char *to_add;
-
-	if (!inp[1])
-	{
-		only_exp(mini->env);
-		return(0);
-	}
-	if(inp[2])
-		inp[1] = ft_strjoin(inp[1], inp[2]);
-	if(!input_chk(inp[1], input))
-	{
-		print_error(" not a valid identifier\n");
-		mini->exit_code = 1;
-		return 0;
-	}
-	eq = ft_strchr(inp[1], '=');
-	if (eq)
-		to_add = strdup(inp[1]);
-	else
-	{
-		to_add = malloc(strlen(inp[1]) + 2);
-		if (!to_add)
-			return (1);
-		ft_strcpy(to_add, inp[1]);
-		to_add[strlen(inp[1])] = '=';
-		to_add[strlen(inp[1]) + 1] = '\0';
-	}
 	while (mini->env[i])
 	{
 		if (strncmp(mini->env[i], inp[1], eq - inp[1]) == 0 && mini->env[i][eq - inp[1]] == '=')
@@ -91,5 +61,28 @@ int ft_exp(t_cmd *input, t_list *mini)
 		mini->env[len] = strdup(inp[1]);
 		mini->env[len + 1] = NULL;
 	}
+}
+
+int ft_exp(t_cmd *input, t_list *mini)
+{
+	char **inp = input->command;
+	int updated = 0;
+	char *eq;
+
+	if (!inp[1])
+	{
+		only_exp(mini->env);
+		return(0);
+	}
+	if(inp[2])
+		inp[1] = ft_strjoin(inp[1], inp[2]);
+	if(!input_chk(inp[1], input))
+	{
+		print_error(" not a valid identifier\n");
+		mini->exit_code = 1;
+		return (0);
+	}
+	eq = ft_strchr(inp[1], '=');
+	set_env(mini, eq, updated, inp);
 	return 0;
 }

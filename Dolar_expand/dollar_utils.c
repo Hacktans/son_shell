@@ -25,6 +25,46 @@ int		dollar_num(char *str)
 	return(dlr);
 }
 
+int get_env_len_with_mini(char *str, int i, t_list *mini)
+{
+    int start = i + 1;
+    char env_name[256];
+    int j = 0;
+	char *value;
+
+    while (str[start] && (ft_isalnum(str[start]) || str[start] == '_'))
+        env_name[j++] = str[start++];
+    env_name[j] = '\0';
+    
+    value = ft_getenv(env_name, mini->env);
+    if (!value)
+        return 0;
+    return (ft_strlen(value));
+}
+
+int     total_len_with_mini(char *str, t_list *mini)
+{
+	int i = 0;
+	int len = 0;
+
+	while(str[i])
+	{
+		if(str[i] == '$')
+		{
+			len += get_env_len_with_mini(str, i, mini);
+			i++;
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+				i++;
+		}
+		else
+		{
+			len++;
+			i++;
+		}
+	}
+	return(len + 1);
+}
+
 int get_env_len(char *str, int i)
 {
     int start = i + 1;

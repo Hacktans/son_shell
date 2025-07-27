@@ -77,6 +77,7 @@ char	*exp_dollar(char *str, int quote, t_list *mini);
 int		if_has_dollar(char *str);
 int		dollar_num(char *str);
 int     total_len(char *str);
+int     total_len_with_mini(char *str, t_list *mini);  // YENİ FONKSİYON
 void	get_exit_code(int exit_code);
 int		spc_chk(char *str);
 void    ft_pwd(t_list *mini);
@@ -92,5 +93,6 @@ int	input_chk(char *inp, t_cmd *input);
 int ft_short(char **env);
 char	*ft_getenv(char *key, char **env);
 char **copy_env(char **envp);
+char *ft_strcat(char *dest, const char *src);
 
 #endif

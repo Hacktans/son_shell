@@ -4,7 +4,7 @@ DEBUG_FLAGS = -g
 
 NAME = minishell
 
-SRC = minishell.c  utils.c ft_tokenize.c parsing.c ft_reader.c builtins/builtins.c quote_chk.c esc_seq.c builtins/ft_echo.c  \
+SRC = minishell.c  utils.c Tokenize/ft_tokenize.c parsing.c ft_reader.c builtins/builtins.c quote_chk.c esc_seq.c builtins/ft_echo.c  \
 	Dolar_expand/dollar_expand.c Dolar_expand/dollar_utils.c  builtins/ft_pwd.c builtins/ft_cd.c  builtins/ft_exit.c redirection.c builtins/ft_env.c \
 	builtins/ft_export.c builtins/builtin_utils.c builtins/ft_unset.c
 OBJ = $(SRC:.c=.o)

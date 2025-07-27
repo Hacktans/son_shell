@@ -3,7 +3,7 @@
 char	*ft_getenv(char *key, char **env)
 {
 	int		i;
-	size_t	len = strlen(key);
+	int		len = strlen(key);
 
 	i = 0;
 	while (env[i])
@@ -14,6 +14,24 @@ char	*ft_getenv(char *key, char **env)
 	}
 	return (NULL);
 }
+
+char *ft_strcat(char *dest, const char *src)
+{
+	int i = 0;
+	int j = 0;
+
+	while (dest[i] != '\0')
+		i++;
+	while (src[j] != '\0')
+	{
+		dest[i] = src[j];
+		i++;
+		j++;
+	}
+	dest[i] = '\0';
+	return dest;
+}
+
 
 int ft_envlen(char **env)
 {

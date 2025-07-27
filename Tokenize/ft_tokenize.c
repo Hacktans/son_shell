@@ -127,14 +127,6 @@ void ft_token(char *input, t_token **tokens)
 				}
 				else if(input[i] == '"')
 				{
-					if(input[i + 1] == '"')
-						add_token(tokens, ft_strdup(""), "word", quote);
-					if (len > 0)
-            		{
-                		word[len] = '\0';
-                		add_token(tokens, word, "word", quote);
-                		len = 0;
-            		}
 					quote = 2;
 					i++;
 					while(input[i] && input[i] != '"' && input[i] != '\\')
@@ -145,6 +137,12 @@ void ft_token(char *input, t_token **tokens)
 					}
 					if(input[i] == '"')
 						i++;
+					if (len > 0)
+					{
+						word[len] = '\0';
+						add_token(tokens, word, "word", quote);
+						len = 0;
+					}	
 				}
 				else if(input[i] == '\\' && char_is_esc(input[i + 1]))
 				{
@@ -172,6 +170,7 @@ void ft_token(char *input, t_token **tokens)
 			{
 				word[len] = '\0';
 				add_token(tokens, word, "word", quote);
+				len = 0;
 			}
 			quote = 0;
 		}

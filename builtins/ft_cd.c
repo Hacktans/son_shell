@@ -5,14 +5,13 @@ char	**ft_env_set(char **env, const char *key, const char *value)
 	int		i = 0;
 	int		key_len = strlen(key);
 	char	*new_var;
-	char	**new_env;
 
 	new_var = malloc(strlen(key) + strlen(value) + 2);
 	if (!new_var)
 		return (env);
-	strcpy(new_var, key);
-	strcat(new_var, "=");
-	strcat(new_var, value);
+	ft_strcpy(new_var, key);
+	ft_strcat(new_var, "=");
+	ft_strcat(new_var, value);
 	while (env[i])
 	{
 		if (strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
@@ -23,22 +22,7 @@ char	**ft_env_set(char **env, const char *key, const char *value)
 		}
 		i++;
 	}
-	new_env = malloc(sizeof(char *) * (i + 2));
-	if (!new_env)
-	{
-		free(new_var);
-		return (env);
-	}
-	i = 0;
-	while (env[i])
-	{
-		new_env[i] = env[i];
-		i++;
-	}
-	new_env[i] = new_var;
-	new_env[i + 1] = NULL;
-	free(env);
-	return (new_env);
+	return(env);
 }
 
 char	*go_home(t_list *mini)
@@ -88,7 +72,6 @@ void	ch_dir(char *new, char *path, char *oldpwd, t_list *mini)
 	free(new);
 	mini->exit_code = 0;
 }
-
 
 void	ft_cd(char **args, t_list *mini)
 {
